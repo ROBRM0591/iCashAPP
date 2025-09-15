@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iCash App - Catálogos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <aside class="sidebar" aria-label="Menú principal">
+        <div class="sidebar-header">
+            <i class="fas fa-wallet app-icon" aria-hidden="true"></i>
+            <div class="app-info">
+                <span class="app-name">iCash App</span>
+                <span class="app-tagline">Gestión Financiera Personal</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav" aria-label="Navegación principal">
+            <span class="nav-heading">MENÚ</span>
+            <ul>
+                <li><a href="dashboard_icash.html"><i class="fas fa-th-large nav-icon" aria-hidden="true"></i><div class="nav-text">Dashboard<small>Resumen mensual</small></div></a></li>
+                <li><a href="transacciones_icash.html"><i class="fas fa-exchange-alt nav-icon" aria-hidden="true"></i><div class="nav-text">Transacciones<small>Gestión de movimientos</small></div></a></li>
+                <li class="active"><a href="#"><i class="fas fa-database nav-icon" aria-hidden="true"></i><div class="nav-text">Datos Base<small>Catálogos del sistema</small></div></a></li>
+                <li><a href="reportes_icash.html"><i class="fas fa-chart-pie nav-icon" aria-hidden="true"></i><div class="nav-text">Reportes<small>Informes y estadísticas</small></div></a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="container">
+        <header class="page-header">
+            <div class="header-content">
+                <i class="fas fa-database header-icon" aria-hidden="true"></i>
+                <div class="header-text">
+                    <h1 class="page-title">Datos Base</h1>
+                    <p class="page-subtitle">Administra los catálogos del sistema</p>
+                </div>
+                <div class="header-actions">
+                    <button id="toggle-search" class="header-btn" aria-label="Buscar en catálogos">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    <button id="toggle-help" class="header-btn" aria-label="Mostrar ayuda">
+                        <i class="fas fa-question-circle"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Barra de búsqueda global -->
+            <div id="global-search" class="global-search" aria-hidden="true">
+                <input type="text" id="search-input" placeholder="Buscar en todos los catálogos..." aria-label="Buscar en catálogos">
+                <button id="clear-search" class="clear-search-btn" aria-label="Limpiar búsqueda">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Modal de ayuda -->
+        <div id="help-modal" class="modal" aria-hidden="true">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Ayuda - Gestión de Catálogos</h2>
+                    <button id="close-help" class="close-modal" aria-label="Cerrar ayuda">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>En esta sección puedes gestionar los catálogos del sistema con la siguiente jerarquía:</p>
+                    <ol>
+                        <li><strong>Tipos de Movimiento</strong>: Define si es Ingreso o Egreso</li>
+                        <li><strong>Tipos de Costo</strong>: Depende del Tipo de Movimiento seleccionado</li>
+                        <li><strong>Categorías</strong>: Depende del Tipo de Movimiento y Tipo de Costo seleccionados</li>
+                        <li><strong>Conceptos</strong>: Depende de todos los niveles anteriores</li>
+                    </ol>
+                    <p>Utiliza los botones "Agregar" para crear nuevos elementos y los botones de edición/eliminación en cada fila para modificar los existentes.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="catalog-grid">
+            <!-- Sección superior izquierda: Tipos de Movimiento -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="header-title-container">
+                        <i class="fas fa-chart-line card-icon" aria-hidden="true"></i>
+                        <h2>Tipos de Movimiento</h2>
+                    </div>
+                    <button class="add-btn" data-target="tipos-movimiento-form" aria-label="Agregar tipo de movimiento">
+                        <i class="fas fa-plus"></i> <span class="btn-text">Agregar</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form class="data-form" id="tipos-movimiento-form">
+                        <div class="form-group">
+                            <label for="id-tipo-movimiento">ID Tipo Movimiento:</label>
+                            <input type="text" id="id-tipo-movimiento" name="id" readonly aria-describedby="id-tipo-movimiento-help">
+                            <small id="id-tipo-movimiento-help" class="field-help">El ID se genera automáticamente</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo-movimiento">Tipo Movimiento: <span class="required">*</span></label>
+                            <input type="text" id="tipo-movimiento" name="nombre" required aria-describedby="tipo-movimiento-help">
+                            <small id="tipo-movimiento-help" class="field-help">Ej: Ingreso, Egreso</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary-btn cancel-btn"><i class="fas fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn primary-btn"><i class="fas fa-save"></i> Guardar</button>
+                        </div>
+                    </form>
+
+                    <div class="table-controls">
+                        <div class="table-info" id="tipos-movimiento-info" aria-live="polite"></div>
+                        <div class="pagination" id="tipos-movimiento-pagination">
+                            <button class="pagination-btn prev" disabled aria-label="Página anterior">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="pagination-status">1 de 1</span>
+                            <button class="pagination-btn next" disabled aria-label="Página siguiente">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="data-list">
+                        <table aria-describedby="tipos-movimiento-info">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Tipo de Movimiento</th>
+                                    <th scope="col" class="actions-header">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tipos-movimiento-body">
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección superior derecha: Tipos de Costo -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="header-title-container">
+                        <i class="fas fa-folder card-icon" aria-hidden="true"></i>
+                        <h2>Tipos de Costo</h2>
+                    </div>
+                    <button class="add-btn" data-target="tipos-costo-form" aria-label="Agregar tipo de costo">
+                        <i class="fas fa-plus"></i> <span class="btn-text">Agregar</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form class="data-form" id="tipos-costo-form">
+                        <div class="form-group">
+                            <label for="id-tipo-costo">ID Tipo Costo:</label>
+                            <input type="text" id="id-tipo-costo" name="id" readonly aria-describedby="id-tipo-costo-help">
+                            <small id="id-tipo-costo-help" class="field-help">El ID se genera automáticamente</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo-costo">Tipo Costo: <span class="required">*</span></label>
+                            <input type="text" id="tipo-costo" name="nombre" required aria-describedby="tipo-costo-help">
+                            <small id="tipo-costo-help" class="field-help">Ej: Fijo, Variable</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-tipo-movimiento-fk">Tipo Movimiento: <span class="required">*</span></label>
+                            <select id="id-tipo-movimiento-fk" name="id_tipo_movimiento" required aria-describedby="id-tipo-movimiento-fk-help">
+                                <option value="">Seleccione un tipo de movimiento</option>
+                            </select>
+                            <small id="id-tipo-movimiento-fk-help" class="field-help">Seleccione el tipo de movimiento asociado</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary-btn cancel-btn"><i class="fas fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn primary-btn"><i class="fas fa-save"></i> Guardar</button>
+                        </div>
+                    </form>
+
+                    <div class="table-controls">
+                        <div class="table-info" id="tipos-costo-info" aria-live="polite"></div>
+                        <div class="pagination" id="tipos-costo-pagination">
+                            <button class="pagination-btn prev" disabled aria-label="Página anterior">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="pagination-status">1 de 1</span>
+                            <button class="pagination-btn next" disabled aria-label="Página siguiente">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="data-list">
+                        <table aria-describedby="tipos-costo-info">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Tipo de Costo</th>
+                                    <th scope="col">Tipo de Movimiento</th>
+                                    <th scope="col" class="actions-header">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tipos-costo-body">
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección inferior izquierda: Categorías -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="header-title-container">
+                        <i class="fas fa-tag card-icon" aria-hidden="true"></i>
+                        <h2>Categorías</h2>
+                    </div>
+                    <button class="add-btn" data-target="categorias-form" aria-label="Agregar categoría">
+                        <i class="fas fa-plus"></i> <span class="btn-text">Agregar</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form class="data-form" id="categorias-form">
+                        <div class="form-group">
+                            <label for="id-categoria">ID Categoría:</label>
+                            <input type="text" id="id-categoria" name="id" readonly aria-describedby="id-categoria-help">
+                            <small id="id-categoria-help" class="field-help">El ID se genera automáticamente</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="categoria">Categoría: <span class="required">*</span></label>
+                            <input type="text" id="categoria" name="nombre" required aria-describedby="categoria-help">
+                            <small id="categoria-help" class="field-help">Ej: Alimentación, Transporte</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-tipo-movimiento-fk-cat">Tipo Movimiento: <span class="required">*</span></label>
+                            <select id="id-tipo-movimiento-fk-cat" name="id_tipo_movimiento" required aria-describedby="id-tipo-movimiento-fk-cat-help">
+                                <option value="">Seleccione un tipo de movimiento</option>
+                            </select>
+                            <small id="id-tipo-movimiento-fk-cat-help" class="field-help">Seleccione el tipo de movimiento asociado</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-tipo-costo-fk-cat">Tipo Costo: <span class="required">*</span></label>
+                            <select id="id-tipo-costo-fk-cat" name="id_tipo_costo" required disabled aria-describedby="id-tipo-costo-fk-cat-help">
+                                <option value="">Primero seleccione un tipo de movimiento</option>
+                            </select>
+                            <small id="id-tipo-costo-fk-cat-help" class="field-help">Seleccione el tipo de costo asociado</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary-btn cancel-btn"><i class="fas fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn primary-btn"><i class="fas fa-save"></i> Guardar</button>
+                        </div>
+                    </form>
+
+                    <div class="table-controls">
+                        <div class="table-info" id="categorias-info" aria-live="polite"></div>
+                        <div class="pagination" id="categorias-pagination">
+                            <button class="pagination-btn prev" disabled aria-label="Página anterior">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="pagination-status">1 de 1</span>
+                            <button class="pagination-btn next" disabled aria-label="Página siguiente">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="data-list">
+                        <table aria-describedby="categorias-info">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Categoría</th>
+                                    <th scope="col">Tipo Movimiento</th>
+                                    <th scope="col">Tipo Costo</th>
+                                    <th scope="col" class="actions-header">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categorias-body">
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección inferior derecha: Conceptos -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="header-title-container">
+                        <i class="fas fa-book card-icon" aria-hidden="true"></i>
+                        <h2>Conceptos</h2>
+                    </div>
+                    <button class="add-btn" data-target="conceptos-form" aria-label="Agregar concepto">
+                        <i class="fas fa-plus"></i> <span class="btn-text">Agregar</span>
+                    </button>
+                </div>
+                <div class="card-body">
+                    <form class="data-form" id="conceptos-form">
+                        <div class="form-group">
+                            <label for="id-concepto">ID Concepto:</label>
+                            <input type="text" id="id-concepto" name="id" readonly aria-describedby="id-concepto-help">
+                            <small id="id-concepto-help" class="field-help">El ID se genera automáticamente</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="concepto">Concepto: <span class="required">*</span></label>
+                            <input type="text" id="concepto" name="nombre" required aria-describedby="concepto-help">
+                            <small id="concepto-help" class="field-help">Ej: Salario, Supermercado</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-tipo-movimiento-fk-con">Tipo Movimiento: <span class="required">*</span></label>
+                            <select id="id-tipo-movimiento-fk-con" name="id_tipo_movimiento" required aria-describedby="id-tipo-movimiento-fk-con-help">
+                                <option value="">Seleccione un tipo de movimiento</option>
+                            </select>
+                            <small id="id-tipo-movimiento-fk-con-help" class="field-help">Seleccione el tipo de movimiento asociado</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-tipo-costo-fk-con">Tipo Costo: <span class="required">*</span></label>
+                            <select id="id-tipo-costo-fk-con" name="id_tipo_costo" required disabled aria-describedby="id-tipo-costo-fk-con-help">
+                                <option value="">Primero seleccione un tipo de movimiento</option>
+                            </select>
+                            <small id="id-tipo-costo-fk-con-help" class="field-help">Seleccione el tipo de costo asociado</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="id-categoria-fk-con">Categoría: <span class="required">*</span></label>
+                            <select id="id-categoria-fk-con" name="id_categoria" required disabled aria-describedby="id-categoria-fk-con-help">
+                                <option value="">Primero seleccione un tipo de costo</option>
+                            </select>
+                            <small id="id-categoria-fk-con-help" class="field-help">Seleccione la categoría asociada</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="btn secondary-btn cancel-btn"><i class="fas fa-times"></i> Cancelar</button>
+                            <button type="submit" class="btn primary-btn"><i class="fas fa-save"></i> Guardar</button>
+                        </div>
+                    </form>
+
+                    <div class="table-controls">
+                        <div class="table-info" id="conceptos-info" aria-live="polite"></div>
+                        <div class="pagination" id="conceptos-pagination">
+                            <button class="pagination-btn prev" disabled aria-label="Página anterior">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <span class="pagination-status">1 de 1</span>
+                            <button class="pagination-btn next" disabled aria-label="Página siguiente">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="data-list">
+                        <table aria-describedby="conceptos-info">
+                            <thead>
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Concepto</th>
+                                    <th scope="col">Categoría</th>
+                                    <th scope="col">Tipo Movimiento</th>
+                                    <th scope="col">Tipo Costo</th>
+                                    <th scope="col" class="actions-header">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="conceptos-body">
+                                <!-- Los datos se cargarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <button class="menu-toggle" aria-label="Toggle navigation menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="loading-overlay" aria-hidden="true">
+        <div class="loading-spinner"></div>
+        <p>Cargando datos...</p>
+    </div>
+
+    <script src="scripts.js"></script>
+</body>
+</html>
